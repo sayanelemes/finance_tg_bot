@@ -1,9 +1,13 @@
-from aiogram import F, Router
+import psutil
+from aiogram import F, Router, html
 from aiogram.filters import CommandStart, Command
 from aiogram.types import Message
 
-
 router = Router()
+
+# Ограничение доступа: впишите свой ID цифрами (без кавычек), например: 123456789
+# Если хотите, чтобы статус сервера могли смотреть абсолютно все — оставьте None
+ADMIN_ID = None  
 
 @router.message(CommandStart())
 async def cmd_start(message: Message):
@@ -22,9 +26,39 @@ async def how_are_you(message: Message):
 
 @router.message(Command('get_photo'))
 async def get_photo(message: Message):
-    await message.answer_photo(photo='')
+    # Чтобы код не падал, временно отправляем текст. Сюда можно вставить реальный file_id фото
+    await message.answer('Здесь должна быть отправка фото. Передайте рабочий file_id в метод answer_photo.')
 
 
 @router.message(F.photo)
-async def get_photo(message: Message):
+async def get_photo_id(message: Message):
     await message.answer(f'ID фото: {message.photo[-1].file_id}')
+
+
+# --- НОВАЯ КОМАНДА СТАТУСА СЕРВЕРА ---
+@router.message(Command("status"))
+async def check_status(message: Message):
+    # Проверка на админа (если ADMIN_ID заполнен)
+    if ADMIN_ID and message.from_user.id != ADMIN_ID:
+        return
+
+    # Собираем метрики без интервала ожидания
+    cpu_usage = psutil.cpu_percent(interval=None)
+    ram = psutil.virtual_memory()
+    disk = psutil.disk_usage('/')
+
+    # Переводим байты в Гигабайты и округляем
+    ram_used = round(ram.used / (1024 ** 3), 2)
+    ram_total = round(ram.total / (1024 ** 3), 2)
+    disk_free = round(disk.free / (1024 ** 3), 2)
+    disk_total = round(disk.total / (1024 ** 3), 2)
+
+    # Формируем текст ответа с HTML-тегами Aiogram
+    status_text = (
+        f"📊 {('СТАТУС СЕРВЕРА:')}\n\n"
+        f"🤖 {('Процессор:')} {cpu_usage}%\n"
+        f"🧠 {('ОЗУ:')} {ram_used} ГБ / {ram_total} ГБ ({ram.percent}%)\n"
+        f"💾 {('Свободно на диске:')} {disk_free} ГБ из {disk_total} ГБ\n"
+    )
+
+    await message.answer(status_text)
