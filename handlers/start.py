@@ -1,3 +1,5 @@
+
+
 import psutil
 from aiogram import F, Router, html
 from aiogram.filters import CommandStart, Command
@@ -46,6 +48,8 @@ async def check_status(message: Message):
     cpu_usage = psutil.cpu_percent(interval=None)
     ram = psutil.virtual_memory()
     disk = psutil.disk_usage('/')
+    battery = psutil.sensors_battery()	
+   
 
     # Переводим байты в Гигабайты и округляем
     ram_used = round(ram.used / (1024 ** 3), 2)
@@ -55,10 +59,12 @@ async def check_status(message: Message):
 
     # Формируем текст ответа с HTML-тегами Aiogram
     status_text = (
-        f"📊 {('СТАТУС СЕРВЕРА:')}\n\n"
-        f"🤖 {('Процессор:')} {cpu_usage}%\n"
-        f"🧠 {('ОЗУ:')} {ram_used} ГБ / {ram_total} ГБ ({ram.percent}%)\n"
-        f"💾 {('Свободно на диске:')} {disk_free} ГБ из {disk_total} ГБ\n"
+        f"📊 СТАТУС СЕРВЕРА:\n\n"
+        f"🤖 Процессор: {cpu_usage}%\n"
+        f"🧠 ОЗУ: {ram_used} ГБ / {ram_total} ГБ ({ram.percent}%)\n"
+        f"💾 Свободно на диске: {disk_free} ГБ из {disk_total} ГБ\n"
+        f"🔋 Батарея: {round(battery.percent)}%,\n ⏳Осталось заряда на: {(battery.secsleft // 60)//60} часов\n🔌 Подключен к сети: {battery.power_plugged} "
     )
 
     await message.answer(status_text)
+
