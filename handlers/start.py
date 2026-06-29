@@ -1,7 +1,5 @@
-
-
 import psutil
-from aiogram import F, Router, html
+from aiogram import F, Router
 from aiogram.filters import CommandStart, Command
 from aiogram.types import Message
 
@@ -48,8 +46,7 @@ async def check_status(message: Message):
     cpu_usage = psutil.cpu_percent(interval=None)
     ram = psutil.virtual_memory()
     disk = psutil.disk_usage('/')
-    battery = psutil.sensors_battery()	
-   
+    battery = psutil.sensors_battery()
 
     # Переводим байты в Гигабайты и округляем
     ram_used = round(ram.used / (1024 ** 3), 2)
