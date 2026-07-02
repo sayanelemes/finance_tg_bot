@@ -48,7 +48,11 @@ async def check_status(message: Message):
         f"💾 Свободно на диске: {disk_free} ГБ из {disk_total} ГБ\n"
     )
     if battery:
-        status_text += (f"🔋 Батарея: {round(battery.percent)}%,\n ⏳Осталось заряда на: {(battery.secsleft // 60)//60} часов\n🔌 Подключен к сети: {battery.power_plugged} ")
+        status_text += f"🔋 Батарея: {round(battery.percent)}%"
+        if battery.power_plugged:
+            status_text += f"⏳Осталось заряда на: ∞\n🔌Подключен к сети: Да"
+        else:
+            status_text += f"⏳Осталось заряда на: {(battery.secsleft // 60)//60} часов\n🔌 Подключен к сети: {battery.power_plugged}"
     else:
         status_text += "🔋 Батарея: Не обнаружена\n"
 

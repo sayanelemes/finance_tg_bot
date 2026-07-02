@@ -24,6 +24,5 @@ if __name__ == '__main__':
     try:
         asyncio.run(main())
     except KeyboardInterrupt:
-        print('\nTschuss!')
         import sys
         sys.exit(0)
