@@ -1,5 +1,6 @@
 import psutil, os
 
+from dotenv import load_dotenv
 from aiogram import F, Router
 from aiogram.filters import CommandStart, Command
 from aiogram.types import Message
@@ -7,9 +8,9 @@ from handlers.keyboards import admin_keyboard
 
 router = Router()
 
-
+load_dotenv()
 env_id = os.getenv('ADMIN_ID', '').strip()
-ADMIN_ID = int(env_id) if env_id.isdigit() else None
+ADMIN_id = int(env_id) if env_id.isdigit() else None
 
 @router.message(CommandStart())
 async def cmd_start(message: Message):
