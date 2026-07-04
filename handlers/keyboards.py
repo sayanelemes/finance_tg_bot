@@ -1,23 +1,41 @@
 from aiogram.types import (ReplyKeyboardMarkup, KeyboardButton,
-                           InlineKeyboardButton, InlineKeyboardMarkup)
+                           InlineKeyboardButton, InlineKeyboardMarkup,
+                           CallbackQuery)
                            
 from aiogram.utils.keyboard import ReplyKeyboardBuilder, InlineKeyboardBuilder
 
 
 
 main = InlineKeyboardMarkup(inline_keyboard=[
-    [InlineKeyboardButton(text='📝 Добавить расход', callback_data='add_expence'),
-    InlineKeyboardButton(text='📊 Статистика', callback_data='view_stats'),
-    InlineKeyboardButton(text='Настройки', callback_data='settings')]
-    ])
+
+    [
+        InlineKeyboardButton(text="📝 Добавить расход", callback_data="add_expense"),
+        InlineKeyboardButton(text="📊 Статистика", callback_data="view_stats")
+    ], 
+
+    [
+        InlineKeyboardButton(text="⚙️Настройки", callback_data="settings")
+    ]
+])
+
+def back_to_main():
+    return InlineKeyboardMarkup(inline_keyboard=[
+        [InlineKeyboardButton(text="⬅️ Назад в меню", callback_data="go_to_main")]
+        ])
+
+def back_to_settings():
+    return InlineKeyboardMarkup(inline_keyboard=[
+        [InlineKeyboardButton(text="⬅️ Назад", callback_data="settings")]
+        ])
+
+menu_settings = {"👤 Профиль": "open_profile", 
+                      "❓ Помощь": "open_help", 
+                      "⬅️ Назад": "go_to_main"
+                      }
 
 
-
-test = ['Профиль', 'Помощь', 'test']
-
-
-async def inline_test():
+async def settings_buttons():
     keyboard = InlineKeyboardBuilder()
-    for example in test:
-        keyboard.add(InlineKeyboardButton(text=example, url='https://github.com/sayanelemes'))
-    return keyboard.adjust(3).as_markup()
+    for text, callback in menu_settings.items():
+        keyboard.add(InlineKeyboardButton(text=text, callback_data=callback))
+    return keyboard.adjust(2).as_markup()
