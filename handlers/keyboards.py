@@ -3,7 +3,7 @@ from aiogram.types import (ReplyKeyboardMarkup, KeyboardButton,
                            CallbackQuery)
                            
 from aiogram.utils.keyboard import ReplyKeyboardBuilder, InlineKeyboardBuilder
-
+from database.requests import get_categories
 
 
 main = InlineKeyboardMarkup(inline_keyboard=[
@@ -39,3 +39,20 @@ async def settings_buttons():
     for text, callback in menu_settings.items():
         keyboard.add(InlineKeyboardButton(text=text, callback_data=callback))
     return keyboard.adjust(2).as_markup()
+
+
+
+async def categories_keyboard():
+    keyboard = InlineKeyboardBuilder()
+    categories = await get_categories()
+    
+    for category in categories:
+        keyboard.add(InlineKeyboardButton(
+            text=category.name, 
+            callback_data=f"category_{category.id}"))
+
+    keyboard.adjust(2)
+
+
+    keyboard.attach(InlineKeyboardBuilder.from_markup(back_to_main()))
+    return keyboard.as_markup()

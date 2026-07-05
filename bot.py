@@ -7,6 +7,7 @@ import logging
 from aiogram import Bot, Dispatcher
 from dotenv import load_dotenv
 from handlers.start import router
+from database.models import async_main
 
 
 load_dotenv()  # импорт токена с .env
@@ -15,6 +16,7 @@ dp = Dispatcher()
 
 
 async def main():
+    await async_main()
     dp.include_router(router)
     await dp.start_polling(bot)
 
