@@ -4,7 +4,9 @@ Finance Telegram Bot (Pet Project)
 
 Что использовал в проекте -  Python, Aiogram, Sqlalchemy, Sqlite
 
+
 Все зависимости проекта в requirements.txt
+
 Для Linux / macOS:
 pip3 install -r requirements.txt
 
