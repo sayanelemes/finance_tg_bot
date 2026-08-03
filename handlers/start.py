@@ -1,6 +1,6 @@
 import handlers.keyboards as kb
 import database.requests as rq
-from database.requests import add_expense
+from database.requests import add_expense, get_user_stats
 
 
 from aiogram import F, Router
@@ -54,7 +54,7 @@ async def show_profile(callback: CallbackQuery):
 @router.callback_query(F.data == "open_help")
 async def show_help(callback: CallbackQuery):
     await callback.answer()
-    await callback.message.edit_text(text="В разработке",
+    await callback.message.edit_text(text="Ваш текст",
                                      reply_markup=kb.back_to_settings()
                                      )
 
@@ -82,6 +82,12 @@ async def expenses(callback: CallbackQuery):
     await callback.message.edit_text("📝 Добавить расход", reply_markup=await kb.categories_keyboard())
 
 
+@router.callback_query(F.data == "view_stats")
+async def stats(callback: CallbackQuery):
+    await callback.answer()
+    stats_text = await get_user_stats(callback.from_user.id)
+    await callback.message.answer(stats_text)
+    
 
 
 @router.callback_query(F.data.startswith("category_"))
